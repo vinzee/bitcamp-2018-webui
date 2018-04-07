@@ -1,0 +1,135 @@
+<html>
+  <head>
+    <script src="third_party/jquery-3.3.1.min.js"></script>
+    <script src="third_party/aframe.min.js"></script>
+    <!-- <script src="third_party/three.js/js/three.min.js"></script> -->
+    <script src="third_party/three.js/js/OBJLoader.js"></script>
+    <script src="third_party/three.js/js/MTLLoader.js"></script>
+
+    <link rel="stylesheet" href="basic-sample.css">
+
+    <script>
+      window.API_KEY = 'AIzaSyDCLl7aMENhHjOiFwoGmj6VEu97Xm9SXrc';
+
+      AFRAME.registerComponent('poly-asset', {
+        schema: {
+          type: 'string',
+          default: '5vbJ5vildOq'
+        },
+        init: function () {
+          console.log('init: ', this.data);
+
+          loadAsset(this.data, this.el);
+        },
+        update: function () {},
+        tick: function () {},
+        remove: function () {},
+        pause: function () {},
+        play: function () {}
+      });
+
+      function loadAsset( id, el ) {
+
+        var url = `https://poly.googleapis.com/v1/assets/${id}/?key=${window.API_KEY}`;
+
+        var request = new XMLHttpRequest();
+        request.open( 'GET', url, true );
+        request.addEventListener( 'load', function ( event ) {
+
+          var asset = JSON.parse( event.target.response );
+
+          asset_name.textContent = asset.displayName;
+          asset_author.textContent = asset.authorName;
+
+          var format = asset.formats.find( format => { return format.formatType === 'OBJ'; } );
+
+          if ( format !== undefined ) {
+
+            var obj = format.root;
+            var mtl = format.resources.find( resource => { return resource.url.endsWith( 'mtl' ) } );
+            mtl.url = mtl.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
+
+
+            obj.url = obj.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
+            var path = obj.url.slice( 0, obj.url.indexOf( obj.relativePath ) );
+
+            var loader = new AFRAME.THREE.MTLLoader();
+            loader.setCrossOrigin( true );
+            loader.setMaterialOptions( { ignoreZeroRGBs: true } );
+            loader.setTexturePath( path );
+            loader.load( mtl.url, function ( materials ) {
+              var loader = new AFRAME.THREE.OBJLoader();
+              loader.setMaterials( materials );
+              loader.load( obj.url, function ( object ) {
+
+                var box = new AFRAME.THREE.Box3();
+                box.setFromObject( object );
+
+                // re-center
+
+                var center = box.getCenter();
+                center.y = box.min.y;
+                object.position.sub( center );
+
+                // scale
+
+                var scaler = new AFRAME.THREE.Group();
+                scaler.add( object );
+                scaler.scale.setScalar( 6 / box.getSize().length() );
+
+                // scene.add( scaler );
+                // el.object3D = scaler;
+                el.setObject3D('crapy-new-asset', scaler);
+              } );
+
+            } );
+
+          }
+
+        } );
+        request.send( null );
+
+      }
+    </script>
+
+  </head>
+  <body>
+    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug>
+      <!-- fog stats  -->
+      <a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
+
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+      <a-entity id="asset" poly-asset="5vbJ5vildOq" position="6 0 -5" rotation="0 0 0" width="40" height="40"></a-entity>
+    </a-scene>
+
+    <div id="info">
+      <span id="asset_name">Title</span><br/>
+      by <span id="asset_author">Author</span>
+    </div>
+
+    <script>
+      const scene = AFRAME.scenes[0];
+      var camera;
+      const $asset = $('#asset')[0];
+
+      if (scene.hasLoaded) {
+        run();
+      } else {
+        scene.addEventListener('loaded', run);
+      }
+
+      // POLY REST API
+
+      function run () {
+        camera = scene.camera;
+        renderer = scene.renderer;
+      }
+
+    </script>
+    <script src="third_party/aframe-inspector.min.js"></script>
+  </body>
+</html>
