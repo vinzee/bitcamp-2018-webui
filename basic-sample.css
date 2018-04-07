@@ -6,18 +6,22 @@ body {
   font-family: sans-serif;
   line-height: 24px;
 }
-#scene {
-  width: 100%;
-  height: calc(100% - 80px);
+
+#results {
+  vertical-align: top;
 }
+#results img {
+  margin-left: 8px;
+  cursor: pointer;
+}
+  #results img:hover {
+    opacity: 0.8;
+  }
 #info {
-  padding: 12px;
+  position: absolute;
+  bottom: 10px;
+  left: 340px;
+  right: 0px;
+  padding-top: 6px;
   text-align: center;
-}
-#asset_name {
-  font-size: 22px;
-  font-weight: bold;
-}
-#asset_author {
-  color: #888;
 }

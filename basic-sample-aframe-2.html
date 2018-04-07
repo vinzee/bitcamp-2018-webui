@@ -7,13 +7,12 @@
     <!-- <script src="third_party/three.js/js/OBJLoader.js"></script> -->
     <!-- <script src="third_party/three.js/js/MTLLoader.js"></script> -->
     <!-- <script src="third_party/three.js/js/TGALoader.js"></script> -->
-    <script src="third_party/pusher.min.js"></script>
     <script src="node_modules/aframe-gamepad-controls/dist/aframe-gamepad-controls.min.js"></script>
     <script src="third_party/aframe-environment-component.min.js"></script>
 
-    <link rel="stylesheet" href="basic-sample.css">
-
 <!--     <script>
+      // AFRAME.THREE.Loader.Handlers.add( /\.tga$/i, new AFRAME.THREE.TGALoader() );
+
       (function(modelEl) {
         if (!window['AFRAME'] && !modelEl) {
           return;
@@ -51,8 +50,28 @@
         }
       }
     </script> -->
+
+  </head>
+  <body>
+    <a-scene id="scene" keyboard-shortcuts vr-mode-ui> <!-- fog stats  -->
+      <!-- light -->
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+
+      <!-- camera -->
+      <a-entity camera="active: true" look-controls wasd-controls gamepad-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
+      <!-- <a-entity camera gamepad-controls></a-entity> -->
+
+      <a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
+
+      <!-- <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box> -->
+      <!-- <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere> -->
+      <!-- <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder> -->
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+
     <script>
-      // AFRAME.THREE.Loader.Handlers.add( /\.tga$/i, new AFRAME.THREE.TGALoader() );
 
       window.API_KEY = 'AIzaSyDCLl7aMENhHjOiFwoGmj6VEu97Xm9SXrc';
 
@@ -94,7 +113,13 @@
           mtl.url = mtl.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
           obj.url = obj.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
 
-          window.$scene.append(
+          console.log('scene: ', $('<a-entity/>').attr({
+              "obj-model": "obj: url(" + obj.url + "); mtl: url(" + mtl.url + ")",
+              "position": "0 1.5 -2",
+              "scale": "3 3 3"
+            }))
+
+          $(scene).append(
             $('<a-entity/>').attr({
               "obj-model": "obj: url(" + obj.url + "); mtl: url(" + mtl.url + ")",
               "position": "0 1.5 -2",
@@ -108,33 +133,6 @@
       }
     </script>
 
-  </head>
-  <body>
-    <form id="search">
-      <input id="query" value="poly"></input>
-      <button id="button">search</button>
-    </form>
-    <span id="results"></span>
-
-    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug="false"> <!-- fog stats  -->
-      <!-- light -->
-      <a-entity light="type: ambient; color: #BBB"></a-entity>
-      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
-
-      <!-- camera -->
-      <a-entity camera="active: true" look-controls wasd-controls gamepad-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
-      <!-- <a-entity camera gamepad-controls></a-entity> -->
-
-      <a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
-
-
-      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
-    </a-scene>
-
     <script>
       const scene = AFRAME.scenes[0];
       const $asset = $('#asset')[0];
@@ -145,27 +143,12 @@
         scene.addEventListener('loaded', () => {
           window.$scene = $('#scene');
           console.log('scene loaded!');
-
-          // window.loadAssetById('86ORGZSCitx');
-          // window.loadAssetBySearch('elephant');
-          window.loadAssetBySearch('pikachu');
         });
       }
 
-      Pusher.logToConsole = true;
-
-      var pusher = new Pusher('87236f1bc800c2d7a718', {
-        wsHost: 'ws.pusherapp.com',
-        httpHost: 'sockjs.pusher.com',
-        encrypted: true
-      });
-
-      var channel = pusher.subscribe('my-channel');
-      channel.bind('my-event', function(data) {
-        alert(data.message);
-      });
-
     </script>
+
     <!-- <script src="third_party/aframe-inspector.min.js"></script> -->
+
   </body>
 </html>

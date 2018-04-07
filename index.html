@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <script src="third_party/jquery-3.3.1.min.js"></script>
+
+    <link rel="stylesheet" href="third_party/bootstrap.min.css">
+    <link rel="stylesheet" href="basic-sample.css">
+
+    <script src="third_party/popper.min.js"></script>
+    <script src="third_party/bootstrap.min.js"></script>
+
+    <script src="third_party/pusher.min.js"></script>
+    <script>
+      Pusher.logToConsole = true;
+
+      var pusher = new Pusher('87236f1bc800c2d7a718', {
+        wsHost: 'ws.pusherapp.com',
+        httpHost: 'sockjs.pusher.com',
+        encrypted: true
+      });
+
+      var channel = pusher.subscribe('my-channel');
+      channel.bind('my-event', function(data) {
+        alert(data.message);
+      });
+    </script>
+  </head>
+
+  <body>
+    <!-- <div class="container"> -->
+      <div class="row">
+        <div class="col-2">
+          <form class="form" id="search">
+            <div class="form-group">
+              <input type="query" class="form-control" id="query" value="pikachu">
+            </div>
+            <div class="form-group">
+              <button id="button" type="submit" class="btn btn-success">Search</button>
+            </div>
+          </form>
+
+          <span id="results"></span>
+        </div>
+
+        <iframe id="iframe" class="col-10" height="100%" src="basic-sample-aframe-2.html"></iframe>
+      </div>
+    <!-- </div> -->
+
+
+    <script>
+      search.addEventListener( 'submit', function ( event ) {
+        event.preventDefault()
+        iframe.contentWindow.loadAssetBySearch(query.value);
+      });
+    </script>
+
+  </body>
+</html>
