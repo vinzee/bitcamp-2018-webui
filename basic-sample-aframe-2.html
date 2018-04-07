@@ -2,17 +2,57 @@
   <head>
     <script src="third_party/jquery-3.3.1.min.js"></script>
     <script src="third_party/aframe.min.js"></script>
-    <script src="third_party/aframe-extras.min.js"></script>
+    <!-- <script src="third_party/aframe-extras.min.js"></script> -->
     <!-- <script src="third_party/three.js/js/three.min.js"></script> -->
-    <script src="third_party/three.js/js/OBJLoader.js"></script>
-    <script src="third_party/three.js/js/MTLLoader.js"></script>
-    <script src="third_party/three.js/js/TGALoader.js"></script>
+    <!-- <script src="third_party/three.js/js/OBJLoader.js"></script> -->
+    <!-- <script src="third_party/three.js/js/MTLLoader.js"></script> -->
+    <!-- <script src="third_party/three.js/js/TGALoader.js"></script> -->
     <script src="third_party/pusher.min.js"></script>
+    <script src="node_modules/aframe-gamepad-controls/dist/aframe-gamepad-controls.min.js"></script>
+    <script src="third_party/aframe-environment-component.min.js"></script>
 
     <link rel="stylesheet" href="basic-sample.css">
 
+<!--     <script>
+      (function(modelEl) {
+        if (!window['AFRAME'] && !modelEl) {
+          return;
+        }
+
+        modelEl.addEventListener('model-loaded', function(evt) {
+            var model = evt.detail.model;
+
+          traverse(model);
+        });
+      })(document.getElementById('stadium'));
+
+      function traverse(node) {
+        node.children.forEach(function(child) {
+          if (child.children) {
+            traverse(child);
+          }
+
+          updateMaterial(child['material'], THREE.DoubleSide);
+        });
+      }
+
+      function updateMaterialSide(material, side) {
+        if (!material) {
+          return;
+        }
+
+        if (material instanceof THREE.Material) {
+          material.side = side;
+          material.needsUpdate = true
+        } else if (material instanceof THREE.MultiMaterial) {
+          material.materials.forEach(function(childMaterial) {
+            updateMaterial(childMaterial, side);
+          });
+        }
+      }
+    </script> -->
     <script>
-      AFRAME.THREE.Loader.Handlers.add( /\.tga$/i, new AFRAME.THREE.TGALoader() );
+      // AFRAME.THREE.Loader.Handlers.add( /\.tga$/i, new AFRAME.THREE.TGALoader() );
 
       window.API_KEY = 'AIzaSyDCLl7aMENhHjOiFwoGmj6VEu97Xm9SXrc';
 
@@ -82,11 +122,15 @@
       <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
 
       <!-- camera -->
-      <a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
+      <a-entity camera="active: true" look-controls wasd-controls gamepad-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
+      <!-- <a-entity camera gamepad-controls></a-entity> -->
 
-      <!-- <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box> -->
-      <!-- <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere> -->
-      <!-- <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder> -->
+      <a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
+
+
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
       <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
@@ -102,9 +146,9 @@
           window.$scene = $('#scene');
           console.log('scene loaded!');
 
-          // window.loadAssetById('5vbJ5vildOq');
+          // window.loadAssetById('86ORGZSCitx');
           // window.loadAssetBySearch('elephant');
-          window.loadAssetBySearch('woman');
+          window.loadAssetBySearch('pikachu');
         });
       }
 
@@ -122,6 +166,6 @@
       });
 
     </script>
-    <script src="third_party/aframe-inspector.min.js"></script>
+    <!-- <script src="third_party/aframe-inspector.min.js"></script> -->
   </body>
 </html>

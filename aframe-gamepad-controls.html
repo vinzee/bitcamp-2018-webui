@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <script src="third_party/aframe.min.js"></script>
+    <script src="node_modules/aframe-gamepad-controls/dist/aframe-gamepad-controls.min.js"></script>
+    <script src="third_party/aframe-environment-component.min.js"></script>
+
+    <!-- <script>
+      AFRAME.registerComponent('gamepad-controls', Gamepad);
+    </script> -->
+  </head>
+  <body>
+    <a-scene>
+        <!-- First-person controls -->
+        <a-entity camera gamepad-controls></a-entity>
+        <a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
+
+
+        <!-- Third-person controls -->
+        <!-- <a-cube gamepad-controls="lookEnabled: false"></a-cube> -->
+
+        <!-- Two players -->
+        <!-- <a-obj-model src="player1.obj" gamepad-controls="controller: 0; lookEnabled: false"></a-obj-model> -->
+        <!-- <a-obj-model src="player2.obj" gamepad-controls="controller: 1; lookEnabled: false"></a-obj-model> -->
+    </a-scene>
+  </body>
+</html>
