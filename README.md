@@ -20,3 +20,5 @@ python -m SimpleHTTPServer 8000
 - https://aws.amazon.com/sns
 
 - https://aframe.io/docs/0.8.0/components/obj-model.html
+- https://aframe.io/docs/0.8.0/components/tracked-controls.html
+- https://hacks.mozilla.org/2018/03/immersive-aframe-low-poly/

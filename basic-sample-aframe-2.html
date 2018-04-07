@@ -2,20 +2,36 @@
   <head>
     <script src="third_party/jquery-3.3.1.min.js"></script>
     <script src="third_party/aframe.min.js"></script>
+    <script src="third_party/aframe-extras.min.js"></script>
     <!-- <script src="third_party/three.js/js/three.min.js"></script> -->
     <script src="third_party/three.js/js/OBJLoader.js"></script>
     <script src="third_party/three.js/js/MTLLoader.js"></script>
+    <script src="third_party/three.js/js/TGALoader.js"></script>
 
     <link rel="stylesheet" href="basic-sample.css">
 
     <script>
+      AFRAME.THREE.Loader.Handlers.add( /\.tga$/i, new AFRAME.THREE.TGALoader() );
+
       window.API_KEY = 'AIzaSyDCLl7aMENhHjOiFwoGmj6VEu97Xm9SXrc';
 
       window.loadAssetBySearch = function ( search_query ) {
-        searchPoly( search_query, function (data) {
+        var url = `https://poly.googleapis.com/v1/assets?keywords=${search_query}&format=OBJ&key=${API_KEY}`;
+        var request = new XMLHttpRequest();
+        request.open( 'GET', url, true );
+
+        request.addEventListener( 'load', function ( event ) {
+          data = JSON.parse( event.target.response );
           console.log('search_query: ', search_query);
-          window.loadAsset(data.assets[0]);
+
+          if (!data.assets || data.assets.length === 0) {
+            console.error("0 search results. Try searching again.");
+          } else {
+            window.loadAsset(data.assets[0]);
+          }
         });
+
+        request.send( null );
       }
 
       window.loadAssetById = function ( id ) {
@@ -38,7 +54,11 @@
           obj.url = obj.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
 
           window.$scene.append(
-            $('<a-entity/>').attr("obj-model", "obj: url(" + obj.url + "); mtl: url(" + mtl.url + ")")
+            $('<a-entity/>').attr({
+              "obj-model": "obj: url(" + obj.url + "); mtl: url(" + mtl.url + ")",
+              "position": "0 1.5 -2",
+              "scale": "3 3 3"
+            })
           );
         } else {
           console.error('Object format is undefined')
@@ -55,7 +75,7 @@
     </form>
     <span id="results"></span>
 
-    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug> <!-- fog stats  -->
+    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug="false"> <!-- fog stats  -->
       <!-- light -->
       <a-entity light="type: ambient; color: #BBB"></a-entity>
       <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
@@ -70,46 +90,21 @@
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
 
-    <div id="info">
-      <span id="asset_name">Title</span><br/>
-      by <span id="asset_author">Author</span>
-    </div>
-
     <script>
       const scene = AFRAME.scenes[0];
-      var camera;
       const $asset = $('#asset')[0];
 
       if (scene.hasLoaded) {
         run();
       } else {
-        scene.addEventListener('loaded', run);
-      }
+        scene.addEventListener('loaded', () => {
+          window.$scene = $('#scene');
+          console.log('scene loaded!');
 
-      // POLY REST API
-
-      function run () {
-        camera = scene.camera;
-        renderer = scene.renderer;
-        window.$scene = $('#scene');
-      }
-
-      // loadAssetById('5vbJ5vildOq');
-      // window.loadAssetBySearch('elephant');
-
-      function searchPoly( keywords, onLoad ) {
-
-        var url = `https://poly.googleapis.com/v1/assets?keywords=${keywords}&format=OBJ&key=${API_KEY}`;
-
-        var request = new XMLHttpRequest();
-        request.open( 'GET', url, true );
-        request.addEventListener( 'load', function ( event ) {
-
-          onLoad( JSON.parse( event.target.response ) );
-
-        } );
-        request.send( null );
-
+          // window.loadAssetById('5vbJ5vildOq');
+          // window.loadAssetBySearch('elephant');
+          window.loadAssetBySearch('woman');
+        });
       }
 
     </script>
