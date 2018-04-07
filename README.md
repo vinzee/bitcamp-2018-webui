@@ -3,7 +3,6 @@
 ## How to Run
 
 ``` bash
-cd /path/to/folder
 python -m SimpleHTTPServer 8000
 ```
 
@@ -19,3 +18,5 @@ python -m SimpleHTTPServer 8000
 - https://bitcamp2018.devpost.com
 - https://bitcamp2018.slack.com
 - https://aws.amazon.com/sns
+
+- https://aframe.io/docs/0.8.0/components/obj-model.html

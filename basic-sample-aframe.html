@@ -57,6 +57,7 @@
             loader.setCrossOrigin( true );
             loader.setMaterialOptions( { ignoreZeroRGBs: true } );
             loader.setTexturePath( path );
+
             loader.load( mtl.url, function ( materials ) {
               var loader = new AFRAME.THREE.OBJLoader();
               loader.setMaterials( materials );
@@ -94,8 +95,13 @@
 
   </head>
   <body>
-    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug>
-      <!-- fog stats  -->
+    <button>Add Asset</button>
+    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug> <!-- fog stats  -->
+      <!-- light -->
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+
+      <!-- camera -->
       <a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
 
       <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
@@ -103,6 +109,7 @@
       <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
       <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
       <a-sky color="#ECECEC"></a-sky>
+
       <a-entity id="asset" poly-asset="5vbJ5vildOq" position="6 0 -5" rotation="0 0 0" width="40" height="40"></a-entity>
     </a-scene>
 
@@ -127,6 +134,10 @@
       function run () {
         camera = scene.camera;
         renderer = scene.renderer;
+      }
+
+      window.addObject = function () {
+
       }
 
     </script>

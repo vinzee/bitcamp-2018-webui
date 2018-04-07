@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <script src="third_party/jquery-3.3.1.min.js"></script>
+    <script src="third_party/aframe.min.js"></script>
+    <!-- <script src="third_party/three.js/js/three.min.js"></script> -->
+    <script src="third_party/three.js/js/OBJLoader.js"></script>
+    <script src="third_party/three.js/js/MTLLoader.js"></script>
+
+    <link rel="stylesheet" href="basic-sample.css">
+
+    <script>
+      window.API_KEY = 'AIzaSyDCLl7aMENhHjOiFwoGmj6VEu97Xm9SXrc';
+
+      window.loadAssetBySearch = function ( search_query ) {
+        searchPoly( search_query, function (data) {
+          console.log('search_query: ', search_query);
+          window.loadAsset(data.assets[0]);
+        });
+      }
+
+      window.loadAssetById = function ( id ) {
+        var url = `https://poly.googleapis.com/v1/assets/${id}/?key=${window.API_KEY}`;
+        var request = new XMLHttpRequest();
+        request.open( 'GET', url, true );
+        request.addEventListener( 'load', function ( event ) {
+          window.loadAsset(JSON.parse( event.target.response ));
+        });
+        request.send( null );
+      }
+
+      window.loadAsset = function (asset) {
+        var format = asset.formats.find( format => { return format.formatType === 'OBJ'; } );
+
+        if ( format !== undefined ) {
+          var obj = format.root;
+          var mtl = format.resources.find( resource => { return resource.url.endsWith( 'mtl' ) } );
+          mtl.url = mtl.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
+          obj.url = obj.url.replace('poly.googleapis', 'vrassets-pa.googleusercontent');
+
+          window.$scene.append(
+            $('<a-entity/>').attr("obj-model", "obj: url(" + obj.url + "); mtl: url(" + mtl.url + ")")
+          );
+        } else {
+          console.error('Object format is undefined')
+        }
+
+      }
+    </script>
+
+  </head>
+  <body>
+    <form id="search">
+      <input id="query" value="poly"></input>
+      <button id="button">search</button>
+    </form>
+    <span id="results"></span>
+
+    <a-scene id="scene" keyboard-shortcuts vr-mode-ui debug> <!-- fog stats  -->
+      <!-- light -->
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+
+      <!-- camera -->
+      <a-entity camera="active: true" look-controls wasd-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
+
+      <!-- <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box> -->
+      <!-- <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere> -->
+      <!-- <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder> -->
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+
+    <div id="info">
+      <span id="asset_name">Title</span><br/>
+      by <span id="asset_author">Author</span>
+    </div>
+
+    <script>
+      const scene = AFRAME.scenes[0];
+      var camera;
+      const $asset = $('#asset')[0];
+
+      if (scene.hasLoaded) {
+        run();
+      } else {
+        scene.addEventListener('loaded', run);
+      }
+
+      // POLY REST API
+
+      function run () {
+        camera = scene.camera;
+        renderer = scene.renderer;
+        window.$scene = $('#scene');
+      }
+
+      // loadAssetById('5vbJ5vildOq');
+      // window.loadAssetBySearch('elephant');
+
+      function searchPoly( keywords, onLoad ) {
+
+        var url = `https://poly.googleapis.com/v1/assets?keywords=${keywords}&format=OBJ&key=${API_KEY}`;
+
+        var request = new XMLHttpRequest();
+        request.open( 'GET', url, true );
+        request.addEventListener( 'load', function ( event ) {
+
+          onLoad( JSON.parse( event.target.response ) );
+
+        } );
+        request.send( null );
+
+      }
+
+    </script>
+    <script src="third_party/aframe-inspector.min.js"></script>
+  </body>
+</html>
