@@ -7,6 +7,7 @@
     <script src="third_party/three.js/js/OBJLoader.js"></script>
     <script src="third_party/three.js/js/MTLLoader.js"></script>
     <script src="third_party/three.js/js/TGALoader.js"></script>
+    <script src="third_party/pusher.min.js"></script>
 
     <link rel="stylesheet" href="basic-sample.css">
 
@@ -106,6 +107,19 @@
           window.loadAssetBySearch('woman');
         });
       }
+
+      Pusher.logToConsole = true;
+
+      var pusher = new Pusher('87236f1bc800c2d7a718', {
+        wsHost: 'ws.pusherapp.com',
+        httpHost: 'sockjs.pusher.com',
+        encrypted: true
+      });
+
+      var channel = pusher.subscribe('my-channel');
+      channel.bind('my-event', function(data) {
+        alert(data.message);
+      });
 
     </script>
     <script src="third_party/aframe-inspector.min.js"></script>
