@@ -8,6 +8,7 @@
     <!-- <script src="third_party/three.js/js/MTLLoader.js"></script> -->
     <!-- <script src="third_party/three.js/js/TGALoader.js"></script> -->
     <script src="node_modules/aframe-gamepad-controls/dist/aframe-gamepad-controls.min.js"></script>
+    <script src="node_modules/aframe-animation-component/dist/aframe-animation-component.min.js"></script>
     <script src="third_party/aframe-environment-component.min.js"></script>
 
 <!--     <script>
@@ -59,15 +60,14 @@
       <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
 
       <!-- camera -->
-      <a-entity camera="active: true" look-controls wasd-controls gamepad-controls position="0 1.6 0" data-aframe-default-camera></a-entity>
-      <!-- <a-entity camera gamepad-controls></a-entity> -->
+      <a-entity camera="active: true" look-controls wasd-controls="fly: true" gamepad-controls="flyEnabled: true" position="0 1.6 0" data-aframe-default-camera></a-entity>
 
       <a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
 
       <!-- <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box> -->
       <!-- <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere> -->
       <!-- <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder> -->
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <!-- <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane> -->
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
 
@@ -76,6 +76,8 @@
       window.API_KEY = 'AIzaSyDCLl7aMENhHjOiFwoGmj6VEu97Xm9SXrc';
 
       window.loadAssetBySearch = function ( search_query ) {
+        console.log('searching for `' + search_query + '`...');
+
         var url = `https://poly.googleapis.com/v1/assets?keywords=${search_query}&format=OBJ&key=${API_KEY}`;
         var request = new XMLHttpRequest();
         request.open( 'GET', url, true );
@@ -105,6 +107,7 @@
       }
 
       window.loadAsset = function (asset) {
+        console.log('Loading asset.');
         var format = asset.formats.find( format => { return format.formatType === 'OBJ'; } );
 
         if ( format !== undefined ) {
@@ -119,11 +122,21 @@
               "scale": "3 3 3"
             }))
 
+          var position = scene.camera.getWorldPosition();
+          var direction = scene.camera.getWorldDirection();
+
+          console.log('position: ', position, 'direction: ', direction);
+
           $(scene).append(
             $('<a-entity/>').attr({
               "obj-model": "obj: url(" + obj.url + "); mtl: url(" + mtl.url + ")",
-              "position": "0 1.5 -2",
-              "scale": "3 3 3"
+              "position": "1 2 -3",
+              // "position": (position.x + direction.x) + ',' + (position.y + direction.y) + ',' + (position.z + direction.z),
+              "scale": "3 3 3",
+              "rotation": "0 0 0",
+              // "animation": "property: rotation",
+              "animation": "property: rotation; dur: 6000; easing: easeInOutSine; loop: true; to: 0 360 0",
+              // ; dir: alternate
             })
           );
         } else {
